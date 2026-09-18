@@ -16,6 +16,8 @@ import com.example.HJO.dto.response.CommentResponse;
 import com.example.HJO.dto.response.CursorPageResponse;
 import com.example.HJO.dto.response.PostDetailResponse;
 import com.example.HJO.dto.response.PostSummaryResponse;
+import com.example.HJO.dto.response.TrendingResponse;
+import com.example.HJO.global.config.TrendingProperties;
 import com.example.HJO.global.error.BusinessException;
 import com.example.HJO.global.error.ErrorCode;
 import com.example.HJO.global.pagination.OffsetCursor;
@@ -32,13 +34,15 @@ public class PostService {
 	private final PostStatsRepository postStatsRepository;
 	private final PostDao postDao;
 	private final CommentDao commentDao;
+	private final TrendingProperties trendingProperties;
 
 	public PostService(PostRepository postRepository, PostStatsRepository postStatsRepository, PostDao postDao,
-			CommentDao commentDao) {
+			CommentDao commentDao, TrendingProperties trendingProperties) {
 		this.postRepository = postRepository;
 		this.postStatsRepository = postStatsRepository;
 		this.postDao = postDao;
 		this.commentDao = commentDao;
+		this.trendingProperties = trendingProperties;
 	}
 
 	/**
@@ -57,6 +61,11 @@ public class PostService {
 		long offset = OffsetCursor.decode(cursor, sort.key());
 		List<PostSummaryResponse> rows = postDao.findPage(sort, offset, size + 1);
 		return CursorPageResponse.fromOverfetched(rows, size, OffsetCursor.encode(sort.key(), offset + size));
+	}
+
+	/** 최근 window(기본 24시간) 조회 이벤트 수 DESC, id DESC, 상위 limit(기본 20)개. 요청마다 실시간 집계 */
+	public TrendingResponse getTrending() {
+		return new TrendingResponse(postDao.findTrending(trendingProperties.window(), trendingProperties.limit()));
 	}
 
 	/** 게시글 1쿼리 + 최상위 댓글(작성자 join, 대댓글 수 포함) 1쿼리. 조회수는 올리지 않는다(views API가 따로 있다) */

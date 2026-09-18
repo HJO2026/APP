@@ -17,6 +17,7 @@ import com.example.HJO.dto.response.CursorPageResponse;
 import com.example.HJO.dto.response.IdResponse;
 import com.example.HJO.dto.response.PostDetailResponse;
 import com.example.HJO.dto.response.PostSummaryResponse;
+import com.example.HJO.dto.response.TrendingResponse;
 import com.example.HJO.global.auth.CurrentUserId;
 import com.example.HJO.service.PostService;
 
@@ -49,6 +50,12 @@ public class PostController {
 			@RequestParam(required = false) String cursor,
 			@RequestParam(defaultValue = "20") @Min(1) @Max(50) int size) {
 		return postService.getPage(sort, cursor, size);
+	}
+
+	/** 최근 24시간 조회 이벤트 기준 인기 글 20개. cursor 없음. 인증 없음 (/{id}보다 고정 경로가 먼저 매칭된다) */
+	@GetMapping("/trending")
+	public TrendingResponse trending() {
+		return postService.getTrending();
 	}
 
 	/** 상세: 게시글 + 최신 최상위 댓글 20개. 인증 없음 */

@@ -1,7 +1,5 @@
 package com.example.HJO.domain;
 
-import java.time.Instant;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,11 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * 댓글은 시드로만 만든다(작성 API 없음).
+ * 댓글과 대댓글. parent_id가 null이면 댓글, 값이 있으면 대댓글이다.
  */
 @Entity
 @Table(name = "comments")
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,20 +24,21 @@ public class Comment {
 	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
+	/** null이면 댓글, 값이 있으면 대댓글(1단계만 허용, 서비스에서 검증) */
+	@Column(name = "parent_id")
+	private Long parentId;
+
 	@Column(nullable = false, columnDefinition = "text")
 	private String content;
-
-	@Column(name = "created_at", nullable = false)
-	private Instant createdAt;
 
 	protected Comment() {
 	}
 
-	public Comment(Long postId, Long userId, String content, Instant createdAt) {
+	public Comment(Long postId, Long userId, Long parentId, String content) {
 		this.postId = postId;
 		this.userId = userId;
+		this.parentId = parentId;
 		this.content = content;
-		this.createdAt = createdAt;
 	}
 
 	public Long getId() {
@@ -54,12 +53,16 @@ public class Comment {
 		return userId;
 	}
 
-	public String getContent() {
-		return content;
+	public Long getParentId() {
+		return parentId;
 	}
 
-	public Instant getCreatedAt() {
-		return createdAt;
+	public boolean isReply() {
+		return parentId != null;
+	}
+
+	public String getContent() {
+		return content;
 	}
 
 }

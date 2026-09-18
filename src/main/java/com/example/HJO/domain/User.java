@@ -1,7 +1,5 @@
 package com.example.HJO.domain;
 
-import java.time.Instant;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +12,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,15 +21,11 @@ public class User {
 	@Column(nullable = false, length = 50)
 	private String nickname;
 
-	@Column(name = "created_at", nullable = false)
-	private Instant createdAt;
-
 	protected User() {
 	}
 
 	public User(String nickname) {
 		this.nickname = nickname;
-		this.createdAt = Instant.now();
 	}
 
 	public Long getId() {
@@ -40,10 +34,6 @@ public class User {
 
 	public String getNickname() {
 		return nickname;
-	}
-
-	public Instant getCreatedAt() {
-		return createdAt;
 	}
 
 }

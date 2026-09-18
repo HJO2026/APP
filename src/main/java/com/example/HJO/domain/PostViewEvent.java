@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "post_view_events")
-public class PostViewEvent {
+public class PostViewEvent extends BaseCreatedEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,6 @@ public class PostViewEvent {
 
 	@Column(name = "client_ts", nullable = false)
 	private Instant clientTs;
-
-	@Column(name = "created_at", nullable = false)
-	private Instant createdAt;
 
 	protected PostViewEvent() {
 	}
@@ -57,10 +54,6 @@ public class PostViewEvent {
 
 	public Instant getClientTs() {
 		return clientTs;
-	}
-
-	public Instant getCreatedAt() {
-		return createdAt;
 	}
 
 }

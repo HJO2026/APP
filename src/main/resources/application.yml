@@ -16,8 +16,8 @@ spring:
     hibernate:
       ddl-auto: validate                          # 스키마는 Flyway로만 관리
   flyway:
-    # TODO(team): 인덱스(V2) 포함 여부 미정. PK만 쓰려면 FLYWAY_LOCATIONS=classpath:db/migration
-    locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-indexes}
+    # baseline은 조회 인덱스 없이 측정한다(PK, UNIQUE 제약만). 개선 실험에서 마이그레이션 위치를 추가할 때 쓴다
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
   lifecycle:
     timeout-per-shutdown-phase: ${SHUTDOWN_TIMEOUT:30s}
 

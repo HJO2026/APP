@@ -28,6 +28,9 @@ spring:
 app:
   db:
     read-url: ${DB_READ_URL:${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}}
+  jwt:
+    # HS256 공유 비밀키. 문자열의 UTF-8 바이트를 그대로 키로 쓴다(32바이트 이상). 기본값 없음: 없으면 기동 실패
+    secret: ${JWT_SECRET:}
 
 server:
   port: ${SERVER_PORT:8080}

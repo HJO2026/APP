@@ -1,11 +1,10 @@
 package com.example.HJO;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
+import com.example.HJO.support.IntegrationTest;
+
+@IntegrationTest
 class HjoApplicationTests {
 
 	@Test

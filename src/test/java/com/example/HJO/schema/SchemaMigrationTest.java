@@ -11,20 +11,17 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.example.HJO.TestcontainersConfiguration;
+import com.example.HJO.support.IntegrationTest;
 
 /**
  * S1: 기본 설정(V1 + V2)으로 Flyway가 적용되고 ddl-auto=validate 컨텍스트가 뜬다.
  * S3: 정합성 제약(UNIQUE, FK)이 동작한다.
  */
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
+@IntegrationTest
 class SchemaMigrationTest {
 
 	@Autowired

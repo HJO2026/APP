@@ -1,0 +1,4 @@
+# 테스트 전용 값. 운영 JWT_SECRET이 아니다
+app:
+  jwt:
+    secret: test-only-hs256-secret-0123456789abcdef

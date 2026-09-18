@@ -7,12 +7,13 @@ spring:
       enabled: ${VIRTUAL_THREADS_ENABLED:false}   # baseline 기본 off
   datasource:
     url: ${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}
-    username: ${DB_USERNAME:hjo}
-    password: ${DB_PASSWORD:hjo}
+    # 계정은 기본값 없이 환경변수로만 받는다(없으면 DB 인증 실패로 기동 실패). 테스트는 Testcontainers가 주입
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}       # HikariCP 기본값과 같다
   jpa:
-    open-in-view: false                           # TODO(team): OSIV off 잠정 (README "팀 확인 필요")
+    open-in-view: false                           # TODO(team): OSIV off 잠정 (요청 내내 커넥션을 잡지 않게)
     hibernate:
       ddl-auto: validate                          # 스키마는 Flyway로만 관리
   flyway:

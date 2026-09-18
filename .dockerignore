@@ -1,0 +1,12 @@
+# 빌드 컨텍스트에서 제외 (이미지 빌드는 소스와 Gradle 설정만 쓴다)
+.git
+.gradle
+.idea
+.claude
+.omc
+build
+out
+bin
+*.iml
+*.md
+.env

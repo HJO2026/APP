@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.example.HJO.support.IntegrationTest;
 
 /**
- * S1: 기본 설정(V1 + V2)으로 Flyway가 적용되고 ddl-auto=validate 컨텍스트가 뜬다.
+ * S1: Flyway가 V1을 적용하고 ddl-auto=validate 컨텍스트가 뜬다.
  * S3: 정합성 제약(UNIQUE, FK)이 동작한다.
  */
 @IntegrationTest
@@ -33,11 +33,11 @@ class SchemaMigrationTest {
 	}
 
 	@Test
-	void appliesV1AndV2() {
+	void appliesV1() {
 		List<String> versions = jdbc.queryForList(
 				"SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank", String.class);
 
-		assertThat(versions).containsExactly("1", "2");
+		assertThat(versions).containsExactly("1");
 	}
 
 	@Test
@@ -59,19 +59,9 @@ class SchemaMigrationTest {
 		assertThat(constraints).containsExactlyInAnyOrder(
 				"uq_post_likes_post_user", "uq_post_view_events_event_id",
 				"fk_posts_board", "fk_posts_author", "fk_post_stats_post",
-				"fk_comments_post", "fk_comments_user",
+				"fk_comments_post", "fk_comments_user", "fk_comments_parent",
 				"fk_post_likes_post", "fk_post_likes_user",
 				"fk_post_view_events_post", "fk_post_view_events_user");
-	}
-
-	@Test
-	void createsBaselineIndexesFromV2() {
-		List<String> indexes = jdbc.queryForList(
-				"SELECT indexname FROM pg_indexes WHERE schemaname = 'public' AND indexname LIKE 'idx_%'", String.class);
-
-		assertThat(indexes).containsExactlyInAnyOrder(
-				"idx_posts_created_at_id", "idx_post_stats_like_count",
-				"idx_comments_post_created", "idx_view_events_created_at");
 	}
 
 	@Test

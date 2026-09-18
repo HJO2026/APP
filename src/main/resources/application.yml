@@ -7,20 +7,18 @@ spring:
       enabled: ${VIRTUAL_THREADS_ENABLED:false}   # baseline 기본 off
   datasource:
     url: ${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}
-    username: ${DB_USERNAME:hjo}
-    password: ${DB_PASSWORD:hjo}
+    # 계정은 기본값 없이 환경변수로만 받는다(없으면 DB 인증 실패로 기동 실패). 테스트는 Testcontainers가 주입
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}       # HikariCP 기본값과 같다
   jpa:
-    open-in-view: false                           # TODO(team): OSIV off 잠정 (README "팀 확인 필요")
+    open-in-view: false                           # TODO(team): OSIV off 잠정 (요청 내내 커넥션을 잡지 않게)
     hibernate:
       ddl-auto: validate                          # 스키마는 Flyway로만 관리
   flyway:
-    # TODO(team): 인덱스(V2) 포함 여부 미정. PK만 쓰려면 FLYWAY_LOCATIONS=classpath:db/migration
-    locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-indexes}
-  mvc:
-    problemdetails:
-      enabled: true
+    # baseline은 조회 인덱스 없이 측정한다(PK, UNIQUE 제약만). 개선 실험에서 마이그레이션 위치를 추가할 때 쓴다
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
   lifecycle:
     timeout-per-shutdown-phase: ${SHUTDOWN_TIMEOUT:30s}
 
@@ -28,6 +26,9 @@ spring:
 app:
   db:
     read-url: ${DB_READ_URL:${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}}
+  trending:
+    window: ${TRENDING_WINDOW:24h}   # 최근 조회 이벤트 집계 기간 (서버 기록 시각 created_at 기준)
+    limit: ${TRENDING_LIMIT:20}      # 돌려줄 글 수
   jwt:
     # HS256 공유 비밀키. 문자열의 UTF-8 바이트를 그대로 키로 쓴다(32바이트 이상). 기본값 없음: 없으면 기동 실패
     secret: ${JWT_SECRET:}

@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HJO.domain.PostSort;
 import com.example.HJO.dto.request.PostCreateRequest;
-import com.example.HJO.dto.response.PostCreateResponse;
+import com.example.HJO.dto.response.CursorPageResponse;
+import com.example.HJO.dto.response.IdResponse;
 import com.example.HJO.dto.response.PostDetailResponse;
-import com.example.HJO.dto.response.PostPageResponse;
+import com.example.HJO.dto.response.PostSummaryResponse;
 import com.example.HJO.global.auth.CurrentUserId;
 import com.example.HJO.service.PostService;
 
@@ -35,15 +36,15 @@ public class PostController {
 
 	/** 게시글 작성 (배경 부하용). 인증 필요 */
 	@PostMapping
-	public ResponseEntity<PostCreateResponse> create(@CurrentUserId Long userId,
+	public ResponseEntity<IdResponse> create(@CurrentUserId Long userId,
 			@Valid @RequestBody PostCreateRequest request) {
 		Long id = postService.create(userId, request);
-		return ResponseEntity.created(URI.create("/posts/" + id)).body(new PostCreateResponse(id));
+		return ResponseEntity.created(URI.create("/posts/" + id)).body(new IdResponse(id));
 	}
 
 	/** 목록. sort=latest|popular, 불투명 cursor, size 1~50 (기본 20). 인증 없음 */
 	@GetMapping
-	public PostPageResponse list(
+	public CursorPageResponse<PostSummaryResponse> list(
 			@RequestParam(defaultValue = "latest") PostSort sort,
 			@RequestParam(required = false) String cursor,
 			@RequestParam(defaultValue = "20") @Min(1) @Max(50) int size) {

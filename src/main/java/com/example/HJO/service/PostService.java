@@ -13,8 +13,8 @@ import com.example.HJO.domain.PostSort;
 import com.example.HJO.domain.PostStats;
 import com.example.HJO.dto.request.PostCreateRequest;
 import com.example.HJO.dto.response.CommentResponse;
+import com.example.HJO.dto.response.CursorPageResponse;
 import com.example.HJO.dto.response.PostDetailResponse;
-import com.example.HJO.dto.response.PostPageResponse;
 import com.example.HJO.dto.response.PostSummaryResponse;
 import com.example.HJO.global.error.BusinessException;
 import com.example.HJO.global.error.ErrorCode;
@@ -53,14 +53,10 @@ public class PostService {
 	}
 
 	/** offset 페이지네이션. size + 1건을 읽어 다음 페이지가 있는지 판단한다 */
-	public PostPageResponse getPage(PostSort sort, String cursor, int size) {
+	public CursorPageResponse<PostSummaryResponse> getPage(PostSort sort, String cursor, int size) {
 		long offset = OffsetCursor.decode(cursor, sort.key());
 		List<PostSummaryResponse> rows = postDao.findPage(sort, offset, size + 1);
-
-		boolean hasNext = rows.size() > size;
-		List<PostSummaryResponse> items = hasNext ? rows.subList(0, size) : rows;
-		String nextCursor = hasNext ? OffsetCursor.encode(sort.key(), offset + size) : null;
-		return new PostPageResponse(items, nextCursor);
+		return CursorPageResponse.fromOverfetched(rows, size, OffsetCursor.encode(sort.key(), offset + size));
 	}
 
 	/** 게시글 1쿼리 + 최상위 댓글(작성자 join, 대댓글 수 포함) 1쿼리. 조회수는 올리지 않는다(views API가 따로 있다) */

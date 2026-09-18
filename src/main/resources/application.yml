@@ -18,9 +18,6 @@ spring:
   flyway:
     # TODO(team): 인덱스(V2) 포함 여부 미정. PK만 쓰려면 FLYWAY_LOCATIONS=classpath:db/migration
     locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-indexes}
-  mvc:
-    problemdetails:
-      enabled: true
   lifecycle:
     timeout-per-shutdown-phase: ${SHUTDOWN_TIMEOUT:30s}
 

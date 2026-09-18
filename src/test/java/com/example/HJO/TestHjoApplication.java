@@ -2,6 +2,8 @@ package com.example.HJO;
 
 import org.springframework.boot.SpringApplication;
 
+import com.example.HJO.support.TestcontainersConfiguration;
+
 public class TestHjoApplication {
 
 	public static void main(String[] args) {

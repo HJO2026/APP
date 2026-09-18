@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.example.HJO.TestcontainersConfiguration;
-
 /**
  * Testcontainers PostgreSQL + test 프로파일(테스트용 JWT 비밀키) + 테스트 토큰 유틸.
  * 설정이 같은 테스트끼리는 Spring 컨텍스트(와 컨테이너)를 공유한다.

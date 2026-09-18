@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -51,6 +52,17 @@ public class GlobalExceptionHandler {
 			MethodArgumentTypeMismatchException.class })
 	ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
 		return toResponse(ErrorCode.INVALID_INPUT);
+	}
+
+	/** FK 위반 등 DB 제약 위반. 없는 게시글/댓글/게시판을 404로 바꾼다. 대응표에 없으면 서버 버그로 보고 500 */
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
+		return ConstraintErrorMapping.resolve(ex)
+				.map(GlobalExceptionHandler::toResponse)
+				.orElseGet(() -> {
+					log.error("Unmapped data integrity violation", ex);
+					return toResponse(ErrorCode.INTERNAL_ERROR);
+				});
 	}
 
 	@ExceptionHandler(NoResourceFoundException.class)

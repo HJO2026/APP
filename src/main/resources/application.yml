@@ -1,0 +1,46 @@
+# 모든 실험 파라미터는 환경변수로 덮어쓴다 (재빌드 없이 변경). 환경변수 표는 README 참고.
+spring:
+  application:
+    name: HJO
+  threads:
+    virtual:
+      enabled: ${VIRTUAL_THREADS_ENABLED:false}   # baseline 기본 off
+  datasource:
+    url: ${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}
+    username: ${DB_USERNAME:hjo}
+    password: ${DB_PASSWORD:hjo}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}       # HikariCP 기본값과 같다
+  jpa:
+    open-in-view: false                           # TODO(team): OSIV off 잠정 (README "팀 확인 필요")
+    hibernate:
+      ddl-auto: validate                          # 스키마는 Flyway로만 관리
+  flyway:
+    # TODO(team): 인덱스(V2) 포함 여부 미정. PK만 쓰려면 FLYWAY_LOCATIONS=classpath:db/migration
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-indexes}
+  mvc:
+    problemdetails:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: ${SHUTDOWN_TIMEOUT:30s}
+
+# TODO(team): 읽기 전용 DB 분리용 (v3 기술 계약). baseline은 쓰지 않는다
+app:
+  db:
+    read-url: ${DB_READ_URL:${DB_WRITE_URL:jdbc:postgresql://localhost:5432/hjo}}
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+logging:
+  level:
+    root: WARN
+    com.example.HJO: INFO
+    org.hibernate.SQL: WARN

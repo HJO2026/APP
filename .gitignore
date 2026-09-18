@@ -40,3 +40,6 @@ out/
 .env
 .omc/
 .claude/settings.local.json
+
+### Claude Code ###
+CLAUDE.md

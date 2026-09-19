@@ -56,7 +56,8 @@ fp_check() {
 }
 
 # 1234567 -> 1,234,567
-n_() { printf '%s' "$1" | sed ':a;s/\B[0-9]\{3\}\>/,&/;ta'; }
+# 1234567 -> 1,234,567. BSD sed(맥)는 \B, \> 를 지원하지 않아 awk로 쓴다.
+n_() { awk -v n="$1" 'BEGIN{s="";while(length(n)>3){s=","substr(n,length(n)-2)s;n=substr(n,1,length(n)-3)}print n s}'; }
 # 초 -> "34분 21초"
 el_() { local t=$1; if [ "$t" -ge 60 ]; then echo "$((t/60))분 $((t%60))초"; else echo "${t}초"; fi; }
 # 프로파일별 예상 시간 (2026-09-19 실측)

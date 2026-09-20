@@ -1,3 +1,11 @@
 /gradlew text eol=lf
 *.bat text eol=crlf
 *.jar binary
+
+# 시드 파일은 리눅스 컨테이너 안에서 실행된다. 윈도우에서 clone할 때 CRLF로 바뀌면
+# bash가 $'\r' 에러를 내고 psql 메타명령과 fingerprint 비교도 깨진다.
+# (src의 마이그레이션 .sql은 Flyway 체크섬에 영향을 주므로 건드리지 않는다)
+*.sh text eol=lf
+seed/**/*.sql text eol=lf
+seed/profiles/*.env text eol=lf
+seed/fingerprints/*.txt text eol=lf
